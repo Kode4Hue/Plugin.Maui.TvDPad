@@ -88,9 +88,7 @@ public partial class FeatureImplementation : IFeature
 	/// </summary>
 	protected virtual void OnKeyDown(DPadKeyEventArgs e)
 	{
-		KeyDown?.Invoke(this, e);
-
-		// If focus navigation is enabled and it's a directional key, trigger focus navigation
+		// If focus navigation is enabled and it's a directional key, trigger focus navigation first
 		if (isFocusNavigationEnabled && IsDirectionalKey(e.Key))
 		{
 			var focusArgs = new FocusNavigationEventArgs(e.Key);
@@ -101,6 +99,9 @@ public partial class FeatureImplementation : IFeature
 				e.Handled = true;
 			}
 		}
+
+		// Then raise the KeyDown event
+		KeyDown?.Invoke(this, e);
 	}
 
 	/// <summary>

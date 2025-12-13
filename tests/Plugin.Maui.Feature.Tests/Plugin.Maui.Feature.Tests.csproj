@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Using assembly reference instead of ProjectReference because the plugin project
+         has multiple target frameworks (iOS, Android, etc.) that can't all be built
+         on every platform. Build the plugin first with:
+         dotnet build ../../src/Plugin.Maui.Feature/Plugin.Maui.Feature.csproj /p:TargetFrameworks=net10.0
+    -->
     <Reference Include="Plugin.Maui.Feature">
       <HintPath>..\..\src\Plugin.Maui.Feature\bin\Debug\net10.0\Plugin.Maui.Feature.dll</HintPath>
     </Reference>

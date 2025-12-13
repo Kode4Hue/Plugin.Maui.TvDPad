@@ -20,7 +20,7 @@ public static class Feature
 /// <summary>
 /// Base implementation of the D-Pad feature interface.
 /// </summary>
-partial class FeatureImplementation : IFeature
+public partial class FeatureImplementation : IFeature
 {
 	bool isListening;
 	bool isFocusNavigationEnabled;

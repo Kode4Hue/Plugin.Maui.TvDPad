@@ -2,7 +2,95 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Plugin.Maui.Feature.Sample.MainPage"
-             Title="Feature Plugin">
+             Title="D-Pad Navigation Demo">
 
-    <!-- Add something that makes sense for your plugin here -->
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <!-- Status Section -->
+            <Frame BorderColor="Gray" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="D-Pad Status" FontSize="20" FontAttributes="Bold" />
+                    <Label x:Name="StatusLabel" Text="Not Listening" FontSize="16" />
+                    <Label x:Name="SupportedLabel" Text="" FontSize="14" TextColor="Gray" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Controls -->
+            <Frame BorderColor="Blue" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Controls" FontSize="20" FontAttributes="Bold" />
+                    <HorizontalStackLayout Spacing="10">
+                        <Button x:Name="StartButton" Text="Start Listening" Clicked="OnStartClicked" />
+                        <Button x:Name="StopButton" Text="Stop Listening" Clicked="OnStopClicked" IsEnabled="False" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="10">
+                        <Button x:Name="EnableFocusButton" Text="Enable Focus Nav" Clicked="OnEnableFocusClicked" />
+                        <Button x:Name="DisableFocusButton" Text="Disable Focus Nav" Clicked="OnDisableFocusClicked" IsEnabled="False" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Event Log -->
+            <Frame BorderColor="Green" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Event Log" FontSize="20" FontAttributes="Bold" HorizontalOptions="FillAndExpand" />
+                        <Button Text="Clear" Clicked="OnClearLogClicked" FontSize="12" Padding="5" />
+                    </HorizontalStackLayout>
+                    <ScrollView HeightRequest="200">
+                        <Label x:Name="EventLogLabel" Text="Press D-Pad keys to see events..." FontSize="12" FontFamily="Courier" />
+                    </ScrollView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Focus Navigation Demo -->
+            <Frame BorderColor="Orange" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Focus Navigation Demo" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="Use D-Pad arrow keys to navigate between buttons:" FontSize="14" />
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" RowSpacing="10" ColumnSpacing="10">
+                        <Button Grid.Row="0" Grid.Column="0" Text="Button 1" />
+                        <Button Grid.Row="0" Grid.Column="1" Text="Button 2" />
+                        <Button Grid.Row="0" Grid.Column="2" Text="Button 3" />
+                        <Button Grid.Row="1" Grid.Column="0" Text="Button 4" />
+                        <Button Grid.Row="1" Grid.Column="1" Text="Button 5" />
+                        <Button Grid.Row="1" Grid.Column="2" Text="Button 6" />
+                        <Button Grid.Row="2" Grid.Column="0" Text="Button 7" />
+                        <Button Grid.Row="2" Grid.Column="1" Text="Button 8" />
+                        <Button Grid.Row="2" Grid.Column="2" Text="Button 9" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Item Selection Demo -->
+            <Frame BorderColor="Purple" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Item Selection Demo" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="Navigate with arrows, press Center/Enter to select:" FontSize="14" />
+                    <CollectionView x:Name="ItemsCollectionView" HeightRequest="150" SelectionMode="Single" SelectionChanged="OnItemSelected">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BorderColor="LightGray" Padding="10" Margin="5">
+                                    <Label Text="{Binding .}" FontSize="16" />
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <Label x:Name="SelectedItemLabel" Text="No item selected" FontSize="14" TextColor="Gray" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Back/Menu Navigation Demo -->
+            <Frame BorderColor="Red" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Back/Menu Navigation" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="Press Back or Menu button to trigger navigation:" FontSize="14" />
+                    <Label x:Name="BackMenuLabel" Text="Waiting for Back/Menu press..." FontSize="14" TextColor="Gray" />
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

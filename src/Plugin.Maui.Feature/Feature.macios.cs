@@ -64,6 +64,14 @@ partial class FeatureImplementation : IFeature
 		OnKeyUp(upArgs);
 	}
 
+	/// <summary>
+	/// Maps iOS/tvOS UIKeyCommand inputs to D-Pad keys.
+	/// Supports arrow keys (UpArrow, DownArrow, LeftArrow, RightArrow),
+	/// Enter/Return keys, and Escape for back navigation.
+	/// Commonly used with Apple TV Siri Remote and game controllers.
+	/// </summary>
+	/// <param name="keyCommand">The UIKeyCommand to map.</param>
+	/// <returns>The corresponding DPadKey, or null if the command is not supported.</returns>
 	static DPadKey? MapUIKeyCommand(UIKeyCommand keyCommand)
 	{
 		if (keyCommand.Input == null)

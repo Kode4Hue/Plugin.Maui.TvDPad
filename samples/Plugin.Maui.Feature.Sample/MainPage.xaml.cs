@@ -34,6 +34,16 @@ public partial class MainPage : ContentPage
 		ItemsCollectionView.ItemsSource = items;
 	}
 
+	protected override void OnDisappearing()
+	{
+		base.OnDisappearing();
+		
+		// Unsubscribe from events to prevent memory leaks
+		feature.KeyDown -= OnKeyDown;
+		feature.KeyUp -= OnKeyUp;
+		feature.FocusNavigationRequested -= OnFocusNavigationRequested;
+	}
+
 	void UpdateStatus()
 	{
 		StatusLabel.Text = feature.IsListening ? "Listening for D-Pad events" : "Not Listening";
@@ -127,8 +137,8 @@ public partial class MainPage : ContentPage
 		var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
 		eventLog.Add($"[{timestamp}] {message}");
 		
-		// Keep only last 20 entries
-		while (eventLog.Count > 20)
+		// Keep only last 20 entries - remove only one item per addition for efficiency
+		if (eventLog.Count > 20)
 		{
 			eventLog.RemoveAt(0);
 		}

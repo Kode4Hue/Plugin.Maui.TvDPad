@@ -20,19 +20,26 @@ public partial class App : MauiWinUIApplication
 		this.InitializeComponent();
 	}
 
-	protected override MauiApp CreateMauiApp()
-	{
-		var mauiApp = MauiProgram.CreateMauiApp();
-		
-		// Hook up keyboard event handlers for the main window
-		var window = Microsoft.Maui.Controls.Application.Current?.Windows[0]?.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
-		if (window != null)
-		{
-			window.Content.KeyDown += OnKeyDown;
-			window.Content.KeyUp += OnKeyUp;
-		}
+	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
-		return mauiApp;
+	protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+	{
+		base.OnLaunched(args);
+
+		// Hook up keyboard event handlers after the window is created
+		// Wait a bit for the window to be fully initialized
+		var timer = new System.Threading.Timer(_ =>
+		{
+			Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
+			{
+				var window = Microsoft.Maui.Controls.Application.Current?.Windows[0]?.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
+				if (window?.Content is UIElement content)
+				{
+					content.KeyDown += OnKeyDown;
+					content.KeyUp += OnKeyUp;
+				}
+			});
+		}, null, 500, System.Threading.Timeout.Infinite);
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs e)

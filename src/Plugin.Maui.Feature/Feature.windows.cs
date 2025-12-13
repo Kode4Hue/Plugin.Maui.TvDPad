@@ -84,6 +84,14 @@ partial class FeatureImplementation : IFeature
 		return args.Handled;
 	}
 
+	/// <summary>
+	/// Maps Windows VirtualKey values to D-Pad keys.
+	/// Supports arrow keys, gamepad D-Pad directions, Enter, Space, Escape, and gamepad buttons.
+	/// Note: VirtualKey.Back represents Backspace and is mapped to DPadKey.Back for consistency
+	/// with navigation scenarios. For text editing, handle Backspace separately if needed.
+	/// </summary>
+	/// <param name="key">The Windows virtual key to map.</param>
+	/// <returns>The corresponding DPadKey, or null if the key is not supported.</returns>
 	static DPadKey? MapVirtualKey(VirtualKey key)
 	{
 		return key switch

@@ -64,6 +64,13 @@ partial class FeatureImplementation : IFeature
 		return args.Handled;
 	}
 
+	/// <summary>
+	/// Maps Android Keycode values to D-Pad keys.
+	/// Supports DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_CENTER,
+	/// ENTER, BACK, and MENU keys commonly found on Android TV remotes and game controllers.
+	/// </summary>
+	/// <param name="keyCode">The Android keycode to map.</param>
+	/// <returns>The corresponding DPadKey, or null if the keycode is not supported.</returns>
 	static DPadKey? MapAndroidKeyCode(Keycode keyCode)
 	{
 		return keyCode switch

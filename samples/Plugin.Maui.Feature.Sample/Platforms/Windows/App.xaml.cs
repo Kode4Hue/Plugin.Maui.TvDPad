@@ -28,7 +28,8 @@ public partial class App : MauiWinUIApplication
 
 		// Hook up keyboard event handlers after the window is created
 		// Wait a bit for the window to be fully initialized
-		var timer = new System.Threading.Timer(_ =>
+		System.Threading.Timer? timer = null;
+		timer = new System.Threading.Timer(_ =>
 		{
 			Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -38,6 +39,9 @@ public partial class App : MauiWinUIApplication
 					content.KeyDown += OnKeyDown;
 					content.KeyUp += OnKeyUp;
 				}
+				
+				// Dispose timer after one-time execution
+				timer?.Dispose();
 			});
 		}, null, 500, System.Threading.Timeout.Infinite);
 	}

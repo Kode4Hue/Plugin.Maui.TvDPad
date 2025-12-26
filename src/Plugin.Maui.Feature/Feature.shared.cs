@@ -1,4 +1,6 @@
-﻿namespace Plugin.Maui.Feature;
+﻿using Microsoft.Maui.ApplicationModel;
+
+namespace Plugin.Maui.Feature;
 
 /// <summary>
 /// Provides static access to the D-Pad navigation feature.
@@ -100,8 +102,21 @@ public partial class FeatureImplementation : IFeature
 			}
 		}
 
-		// Then raise the KeyDown event
-		KeyDown?.Invoke(this, e);
+		if (KeyDown == null)
+			return;
+
+		// Invoke handlers on the main thread asynchronously to avoid deadlocks and cross-thread issues
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			try
+			{
+				KeyDown.Invoke(this, e);
+			}
+			catch
+			{
+				// Swallow to prevent UI crashes from handler exceptions
+			}
+		});
 	}
 
 	/// <summary>
@@ -109,7 +124,17 @@ public partial class FeatureImplementation : IFeature
 	/// </summary>
 	protected virtual void OnKeyUp(DPadKeyEventArgs e)
 	{
-		KeyUp?.Invoke(this, e);
+		if (KeyUp == null)
+			return;
+
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			try
+			{
+				KeyUp.Invoke(this, e);
+			}
+			catch { }
+		});
 	}
 
 	/// <summary>
@@ -117,7 +142,13 @@ public partial class FeatureImplementation : IFeature
 	/// </summary>
 	protected virtual void OnFocusNavigationRequested(FocusNavigationEventArgs e)
 	{
-		FocusNavigationRequested?.Invoke(this, e);
+		if (FocusNavigationRequested == null)
+			return;
+
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			try { FocusNavigationRequested.Invoke(this, e); } catch { }
+		});
 	}
 
 	/// <summary>

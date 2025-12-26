@@ -1,4 +1,5 @@
 ﻿using UIKit;
+using Foundation;
 
 namespace Plugin.Maui.Feature;
 
@@ -77,15 +78,26 @@ partial class FeatureImplementation : IFeature
 		if (keyCommand.Input == null)
 			return null;
 
-		return keyCommand.Input switch
+		var inputStr = keyCommand.Input.ToString();
+
+		switch (inputStr)
 		{
-			UIKeyCommand.UpArrow => DPadKey.Up,
-			UIKeyCommand.DownArrow => DPadKey.Down,
-			UIKeyCommand.LeftArrow => DPadKey.Left,
-			UIKeyCommand.RightArrow => DPadKey.Right,
-			"\r" or "\n" => DPadKey.Enter,
-			UIKeyCommand.Escape => DPadKey.Back,
-			_ => null
-		};
+			// Common arrow characters
+			case "\u2191": // ↑
+				return DPadKey.Up;
+			case "\u2193": // ↓
+				return DPadKey.Down;
+			case "\u2190": // ←
+				return DPadKey.Left;
+			case "\u2192": // →
+				return DPadKey.Right;
+			case "\r":
+			case "\n":
+				return DPadKey.Enter;
+			case "\u001b": // Escape
+				return DPadKey.Back;
+			default:
+				return null;
+		}
 	}
 }

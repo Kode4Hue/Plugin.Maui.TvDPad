@@ -1,4 +1,4 @@
-﻿namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 partial class FeatureImplementation : IFeature
 {
@@ -12,22 +12,22 @@ partial class FeatureImplementation : IFeature
 	private partial void StartListeningPlatform()
 	{
 		// No platform-specific implementation for generic .NET
-	}
+		}
 
 	private partial void StopListeningPlatform()
 	{
 		// No platform-specific implementation for generic .NET
-	}
+		}
 
 	private partial void EnableFocusNavigationPlatform()
 	{
 		// No platform-specific implementation for generic .NET
-	}
+		}
 
 	private partial void DisableFocusNavigationPlatform()
 	{
 		// No platform-specific implementation for generic .NET
-	}
+		}
 
 	/// <summary>
 	/// Simulates a key press for testing purposes.

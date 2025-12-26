@@ -1,6 +1,6 @@
-﻿using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.ApplicationModel;
 
-namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 /// <summary>
 /// Provides static access to the D-Pad navigation feature.
@@ -157,7 +157,7 @@ public partial class FeatureImplementation : IFeature
 	protected static bool IsDirectionalKey(DPadKey key)
 	{
 		return key == DPadKey.Up || key == DPadKey.Down || 
-		       key == DPadKey.Left || key == DPadKey.Right;
+			   key == DPadKey.Left || key == DPadKey.Right;
 	}
 
 	// Platform-specific methods to be implemented

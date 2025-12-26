@@ -1,17 +1,16 @@
-﻿using Android.App;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Plugin.Maui.DPad;
 
-namespace Plugin.Maui.Feature.Sample;
+namespace Plugin.Maui.DPad.Sample;
 
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
 	public override bool OnKeyDown(Keycode keyCode, KeyEvent? e)
 	{
-		// Get the feature implementation and handle the key
 		var feature = Feature.Default as FeatureImplementation;
 		if (feature != null && feature.HandleKeyDown(keyCode, e))
 		{
@@ -23,7 +22,6 @@ public class MainActivity : MauiAppCompatActivity
 
 	public override bool OnKeyUp(Keycode keyCode, KeyEvent? e)
 	{
-		// Get the feature implementation and handle the key
 		var feature = Feature.Default as FeatureImplementation;
 		if (feature != null && feature.HandleKeyUp(keyCode, e))
 		{

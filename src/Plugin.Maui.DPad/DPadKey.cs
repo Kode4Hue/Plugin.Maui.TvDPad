@@ -1,4 +1,4 @@
-namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 /// <summary>
 /// Represents D-Pad navigation keys and common buttons.

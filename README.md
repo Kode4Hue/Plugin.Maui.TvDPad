@@ -26,7 +26,7 @@ dotnet add package Plugin.Maui.DPad
 ### Manual Installation
 
 1. Clone or download this repository
-2. Add a project reference to `src/Plugin.Maui.Feature/Plugin.Maui.Feature.csproj` in your MAUI project
+2. Add a project reference to `src/Plugin.Maui.DPad/Plugin.Maui.DPad.csproj` in your MAUI project
 
 ## Supported Platforms
 

@@ -1,14 +1,14 @@
-﻿using Android.App;
+using Android.App;
 using Android.Views;
 using Android.Widget;
 using Android.Util;
 using System;
 
-namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 partial class FeatureImplementation : IFeature
 {
-	private const string TAG = "Plugin.Maui.Feature";
+	private const string TAG = "Plugin.Maui.DPad";
 
 	// Debounce recent toast emissions to avoid duplicates when events are delivered multiple times
 	static readonly object toastLock = new object();

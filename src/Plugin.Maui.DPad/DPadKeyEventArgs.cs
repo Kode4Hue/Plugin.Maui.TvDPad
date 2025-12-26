@@ -1,4 +1,4 @@
-namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 /// <summary>
 /// Event arguments for D-Pad key events.

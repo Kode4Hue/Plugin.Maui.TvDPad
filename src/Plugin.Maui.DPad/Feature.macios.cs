@@ -1,7 +1,7 @@
-﻿using UIKit;
+using UIKit;
 using Foundation;
 
-namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 partial class FeatureImplementation : IFeature
 {
@@ -83,13 +83,13 @@ partial class FeatureImplementation : IFeature
 		switch (inputStr)
 		{
 			// Common arrow characters
-			case "\u2191": // ↑
+			case "\u2191": // ?
 				return DPadKey.Up;
-			case "\u2193": // ↓
+			case "\u2193": // ?
 				return DPadKey.Down;
-			case "\u2190": // ←
+			case "\u2190": // ?
 				return DPadKey.Left;
-			case "\u2192": // →
+			case "\u2192": // ?
 				return DPadKey.Right;
 			case "\r":
 			case "\n":

@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 
-namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 partial class FeatureImplementation : IFeature
 {

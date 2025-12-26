@@ -1,4 +1,4 @@
-﻿namespace Plugin.Maui.Feature;
+namespace Plugin.Maui.DPad;
 
 /// <summary>
 /// Provides D-Pad navigation support for .NET MAUI applications.

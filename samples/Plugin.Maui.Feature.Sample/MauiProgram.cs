@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Plugin.Maui.DPad;
+using Plugin.Maui.TvDPad;
 
 namespace Plugin.Maui.Feature.Sample;
 

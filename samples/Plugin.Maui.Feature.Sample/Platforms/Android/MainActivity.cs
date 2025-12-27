@@ -2,7 +2,7 @@
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
-using Plugin.Maui.DPad;
+using Plugin.Maui.TvDPad;
 
 namespace Plugin.Maui.Feature.Sample;
 

@@ -1,0 +1,1 @@
+Note: files moved to Plugin.Maui.TvDPad. If additional manual cleanup needed, rename solution entries accordingly.

@@ -1,7 +1,7 @@
-using Plugin.Maui.DPad;
+using Plugin.Maui.TvDPad;
 using System.Collections.ObjectModel;
 
-namespace Plugin.Maui.DPad.Sample;
+namespace Plugin.Maui.TvDPad.Sample;
 
 public partial class MainPage : ContentPage
 {

@@ -48,13 +48,13 @@ public partial class App : MauiWinUIApplication
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs e)
 	{
-		var feature = Plugin.Maui.Feature.Feature.Default as Plugin.Maui.Feature.FeatureImplementation;
+		var feature = Plugin.Maui.TvDPad.Feature.Default as Plugin.Maui.TvDPad.FeatureImplementation;
 		feature?.HandleKeyRoutedEvent(e, isKeyDown: true);
 	}
 
 	private void OnKeyUp(object sender, KeyRoutedEventArgs e)
 	{
-		var feature = Plugin.Maui.Feature.Feature.Default as Plugin.Maui.Feature.FeatureImplementation;
+		var feature = Plugin.Maui.TvDPad.Feature.Default as Plugin.Maui.TvDPad.FeatureImplementation;
 		feature?.HandleKeyRoutedEvent(e, isKeyDown: false);
 	}
 }

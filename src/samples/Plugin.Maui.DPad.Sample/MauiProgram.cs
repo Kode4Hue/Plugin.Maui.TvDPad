@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Plugin.Maui.TvDPad;
 
-namespace Plugin.Maui.Feature.Sample;
+namespace Plugin.Maui.TvDPad.Sample;
 
 public static class MauiProgram
 {

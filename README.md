@@ -1,53 +1,135 @@
-# Plugin.Maui.Feature Template
+# Plugin.Maui.TvDPad - D-Pad Navigation for .NET MAUI
 
-The `Plugin.Maui.Feature` repository is a template repository that can be used to bootstrap your own .NET MAUI plugin project. You can use this project structure as a blueprint for your own work.
+> ⚠️ **Current Focus: Android TV**
 
-Learn how to get started with your plugin in this [YouTube video](https://www.youtube.com/watch?v=ZCQrlGT7MhI&list=PLfbOp004UaYVgzmTBNVI0ql2qF0LhSEU1&index=27).
+`Plugin.Maui.TvDPad` provides D-Pad navigation support for .NET MAUI applications, enabling developers to build TV-optimized interfaces with full remote control support.
 
-This template contains:
+## Features
 
-- A [sample .NET MAUI app](samples) where you can demonstrate how your plugin works and test your plugin with while developing
-- The [source](src) of the plugin
-- A boilerplate [README file](README_Feature.md) you can use (don't forget to rename to `README.md` and remove this one!)
-- [GitHub Actions for CI](.github/workflows) of the library and the sample app
-- [GitHub Action for releasing](.github/workflows) your package to NuGet
-- A [generic icon](nuget.png) for your project, feel free to adapt and be creative!
-- The [LICENSE](LICENSE) file with the MIT license. If you want this to be different, please change it. At the very least add your name in there!
+- Full D-Pad directional key support (Up, Down, Left, Right)
+- Action buttons (Center/OK/Select, Enter)
+- Navigation buttons (Back, Menu)
+- Automatic focus navigation between UI elements
+- Event-driven API with `KeyDown`, `KeyUp`, and `FocusNavigationRequested` events
+- Works with Android TV remotes and common controllers
+- Built for .NET 10 and .NET MAUI
 
-## Getting Started
+## Installation
 
-1. Create your own GitHub repository from this one by clicking the "Use this template" button and then "Create a new repository". More information in the [documentation](https://docs.github.com/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template). After that, clone the repo to your local machine.
+### Manual Installation
 
-2. Replace all occurrences of `Plugin.Maui.Feature` with whatever your feature or functionality will be. For instance: `Plugin.Maui.ScreenBrightness` or `Plugin.Maui.Audio`. Of course the name can be anything, but to make it more discoverable it could be a great choice to stick to this naming scheme. You can easily do this with your favorite text-editor and do a replace all on all files.
+1. Clone or download this repository
+2. Add a project reference to `src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj` in your MAUI project
 
-   2.1 Don't forget to also rename the files and folders on your filesystem.
+## Quick Start for Android TV
 
-3. In the csproj file of the plugin project (under `src`), make sure that you replace all relevant values to your project. This means the author of this project, the description of the project, the target framework (.NET 7, 8 or something else). If you don't want to or can't support a certain platform, remove that target platform altogether.
+### 1. Register the plugin (optional DI)
 
-4. Delete this `README.md` file and rename `README_Feature.md` to `README.md`. Fill that README file with all the relevant details of your project.
+In `MauiProgram.cs` register the feature if you want to consume it via DI (optional):
 
-5. Check the LICENSE file if this reflects the license that you want to distribute your project under. At the very least add your name there and the current year we live in.
+```csharp
+using Plugin.Maui.TvDPad;
 
-6. Create a nice icon in the `nuget.png` file that will show up on nuget.org and in the NuGet manager in Visual Studio.
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
 
-7. Write your plugin code (under `src`) and add samples to the .NET MAUI sample app (under `samples` folder)
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
 
-8. Make super sure that your package won't show up as `Plugin.Maui.Feature` on NuGet! If one does, you owe me a drink!
+        // Optional: register shared feature in DI
+        builder.Services.AddSingleton<IFeature>(Feature.Default);
 
-9. Publish your package to NuGet, a nice guide to do that can be found [here](https://learn.microsoft.com/nuget/nuget-org/publish-a-package). Also see [Publish to NuGet](#publish-to-nuget) below.
+        return builder.Build();
+    }
+}
+```
 
-10. Enjoy life as a .NET MAUI plugin author! ✨
+> Note: You can also use the static `Feature.Default` instance directly without registering it in DI.
 
-As an example of all of this you can have a look at:
+### 2. Forward key events from Android Activity
 
-- [Plugin.Maui.Audio](https://github.com/jfversluis/Plugin.Maui.Audio)
-- [Plugin.Maui.Pedometer](https://github.com/jfversluis/Plugin.Maui.Pedometer)
-- [Plugin.Maui.ScreenBrightness](https://github.com/jfversluis/Plugin.Maui.ScreenBrightness)
+In `Platforms/Android/MainActivity.cs` forward key events to the plugin so it can map and raise events:
 
-## Publish to NuGet
+```csharp
+using Android.App;
+using Android.Content.PM;
+using Android.Views;
+using Plugin.Maui.TvDPad;
 
-If you want to publish your package to NuGet, you totally can! Included in this template are a couple of GitHub Actions. One of them goes of when you create a new tag with this pattern: `v1.0.0` or `v1.0.0-preview1`. Obviously the `1.0.0` part can be determined by you as you see fit, as long as you follow the pattern of 3 integers separated by dots.
+[Activity(...)]
+public class MainActivity : MauiAppCompatActivity
+{
+    readonly IFeature dpad = Feature.Default;
 
-You will also want to set a secret for this repository which contains your NuGet API key. Follow the documentation on that [here](https://docs.github.com/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository), and add a secret with the key `NUGET_API_KEY` and value of your NuGet API key. The API key should be authorized to push a NuGet package with the given identifier. 
+    public override bool DispatchKeyEvent(KeyEvent e)
+    {
+        if (dpad is FeatureImplementation impl)
+        {
+            if (e.Action == KeyEventActions.Down && impl.HandleKeyDown((Keycode)e.KeyCode, e))
+                return true;
+            if (e.Action == KeyEventActions.Up && impl.HandleKeyUp((Keycode)e.KeyCode, e))
+                return true;
+        }
 
-From there, after [creating a GitHub release](https://docs.github.com/repositories/releasing-projects-on-github/managing-releases-in-a-repository) your plugin will be automatically released on NuGet!
+        return base.DispatchKeyEvent(e);
+    }
+}
+```
+
+### 3. Use in a Page
+
+Subscribe to events and update UI safely (invoke on main thread):
+
+```csharp
+using Plugin.Maui.TvDPad;
+
+public partial class MainPage : ContentPage
+{
+    readonly IFeature dpad = Feature.Default;
+
+    public MainPage()
+    {
+        InitializeComponent();
+        dpad.KeyDown += OnKeyDown;
+        dpad.KeyUp += OnKeyUp;
+        dpad.StartListening();
+        dpad.EnableFocusNavigation();
+    }
+
+    void OnKeyDown(object? s, DPadKeyEventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(() => StatusLabel.Text = $"Key Down: {e.Key}");
+        e.Handled = true;
+    }
+}
+```
+
+## Testing on Android TV
+
+- Use an Android TV emulator image or a physical Android TV device
+- Emulator keyboard mappings: arrow keys → D-Pad, Enter → Center, Backspace → Back
+- Ensure `MainActivity` forwards key events to the plugin
+
+## Troubleshooting
+
+- If events don't fire: ensure `StartListening()` was called and `DispatchKeyEvent` forwards to `Feature.Default`
+- If UI updates crash: ensure you update UI on the main thread (use `MainThread.BeginInvokeOnMainThread`)
+
+## Project layout
+
+- `src/Plugin.Maui.TvDPad` — plugin library (multi-targeted)
+- `samples/` — sample apps (if included)
+
+## License
+
+MIT

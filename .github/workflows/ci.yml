@@ -9,12 +9,15 @@ on:
     branches: [ "main" ]
 
 env:
-  DOTNET_VERSION: '9.0.x' # The .NET SDK version to use
+  DOTNET_VERSION: '10.0.x' # The .NET SDK version to use
 
 jobs:
   build-plugin-ci:
 
     runs-on: windows-latest
+    
+    permissions:
+      contents: read
 
     steps:
     - uses: actions/checkout@v4

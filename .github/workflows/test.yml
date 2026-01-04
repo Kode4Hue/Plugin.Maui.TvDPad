@@ -28,7 +28,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     
     - name: Build Plugin for Testing
-      run: dotnet build src/Plugin.Maui.Feature/Plugin.Maui.Feature.csproj /p:TargetFrameworks=net10.0 -c Debug
+      run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj /p:TargetFrameworks=net10.0 -c Debug
 
     - name: Restore Test Dependencies
       run: dotnet restore tests/Plugin.Maui.Feature.Tests.sln

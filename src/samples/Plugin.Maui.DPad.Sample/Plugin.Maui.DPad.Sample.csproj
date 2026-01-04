@@ -8,6 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Plugin.Maui.DPad\Plugin.Maui.DPad.csproj" />
+    <ProjectReference Include="..\..\Plugin.Maui.TvDPad\Plugin.Maui.TvDPad.csproj" />
   </ItemGroup>
 </Project>

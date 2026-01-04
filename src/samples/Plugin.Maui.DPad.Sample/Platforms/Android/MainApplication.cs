@@ -1,7 +1,7 @@
 using Android.App;
 using Android.Runtime;
 
-namespace Plugin.Maui.DPad.Sample;
+namespace Plugin.Maui.TvDPad.Sample;
 
 [Application]
 public class MainApplication : MauiApplication

@@ -10,7 +10,7 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  build:
+  build-android:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -35,18 +35,23 @@ jobs:
           restore-keys: |
             dotnet-${{ runner.os }}-maui-
 
-      # 🔑 REQUIRED for net10.0-android MAUI projects
+      # 🔑 Android-only workload (Windows-safe)
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
 
-      - name: Restore
-        run: dotnet restore src/Plugin.Maui.TvDPad.sln
+      # ✅ Restore ONLY Android TFM
+      - name: Restore (Android)
+        run: dotnet restore src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj -f net10.0-android
 
-      - name: Build
-        run: dotnet build src/Plugin.Maui.TvDPad.sln --configuration ${{ matrix.configuration }} --no-restore
+      # ✅ Build ONLY Android TFM
+      - name: Build (Android)
+        run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
+          -f net10.0-android `
+          -c ${{ matrix.configuration }} `
+          --no-restore
 
       - name: Test
         run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
-          --configuration ${{ matrix.configuration }} `
+          -c ${{ matrix.configuration }} `
           --no-build `
           --verbosity normal

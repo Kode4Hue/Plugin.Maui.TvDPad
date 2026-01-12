@@ -6,9 +6,7 @@ on:
       - '*'
   pull_request:
     branches:
-      - main
-      - master
-      - 'feature/**'
+      - '*'
   workflow_dispatch: {}
 
 jobs:
@@ -27,11 +25,11 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore
-        run: dotnet restore Plugin.Maui.TvDPad.sln
+        run: dotnet restore src/Plugin.Maui.TvDPad.sln
 
       - name: Build
-        run: dotnet build Plugin.Maui.TvDPad.sln --configuration ${{ matrix.configuration }} --no-restore
+        run: dotnet build src/Plugin.Maui.TvDPad.sln --configuration ${{ matrix.configuration }} --no-restore
 
       - name: Test
         run: |
-          dotnet test tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj --configuration ${{ matrix.configuration }} --no-build --verbosity normal

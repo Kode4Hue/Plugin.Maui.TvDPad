@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    # run on pushes to any branch (ensures feature/* branches trigger CI)
     branches:
       - main
       - master
@@ -10,6 +11,7 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch: {}
 
 jobs:
   build:

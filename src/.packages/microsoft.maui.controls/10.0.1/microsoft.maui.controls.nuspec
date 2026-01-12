@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Maui.Controls</id>
+    <version>10.0.1</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>Icon.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/dotnet/maui</projectUrl>
+    <description>.NET Multi-platform App UI (.NET MAUI) is a cross-platform framework for creating native mobile and desktop apps with C# and XAML. Using .NET MAUI, you can develop apps that can run on Android, iOS, macOS, Tizen, and Windows from a single shared codebase.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>dotnet-maui dotnet maui cross-platform ios android macos maccatalyst windows winui</tags>
+    <serviceable>true</serviceable>
+    <repository type="git" url="https://github.com/dotnet/maui.git" commit="c1c069ac0957d8241f5714c4700855728eeb6216" />
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-android36.0">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-ios26.0">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-maccatalyst26.0">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-windows10.0.19041">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-windows10.0.20348">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="Microsoft.Maui.Controls.Build.Tasks" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Core" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Controls.Xaml" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Maui.Resizetizer" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

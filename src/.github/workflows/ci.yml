@@ -2,11 +2,7 @@ name: CI
 
 on:
   push:
-    # run on pushes to any branch (ensures feature/* branches trigger CI)
     branches:
-      - main
-      - master
-      - 'feature/**'
       - '*'
   pull_request:
     branches:
@@ -20,7 +16,6 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
-        target: [net10.0]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,10 +26,11 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore
-        run: dotnet restore src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj
+        run: dotnet restore Plugin.Maui.TvDPad.sln
 
       - name: Build
-        run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj --configuration ${{ matrix.configuration }} --no-restore
+        run: dotnet build Plugin.Maui.TvDPad.sln --configuration ${{ matrix.configuration }} --no-restore
 
       - name: Test
-        run: echo "No tests configured"
+        run: |
+          dotnet test tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj --configuration ${{ matrix.configuration }} --no-build --verbosity normal

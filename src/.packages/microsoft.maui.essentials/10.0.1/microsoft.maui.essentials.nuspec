@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Maui.Essentials</id>
+    <version>10.0.1</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>Icon.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/dotnet/maui</projectUrl>
+    <description>.NET Multi-platform App UI (.NET MAUI) is a cross-platform framework for creating native mobile and desktop apps with C# and XAML. This package contains a collection of cross-platform APIs for working with device sensors and other features.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>dotnet-maui dotnet maui cross-platform ios android macos maccatalyst windows winui essentials sensors</tags>
+    <serviceable>true</serviceable>
+    <repository type="git" url="https://github.com/dotnet/maui.git" commit="c1c069ac0957d8241f5714c4700855728eeb6216" />
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-android36.0">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Xamarin.AndroidX.Activity" version="1.10.1.3" exclude="Build,Analyzers" />
+        <dependency id="Xamarin.AndroidX.Browser" version="1.8.0.11" exclude="Build,Analyzers" />
+        <dependency id="Xamarin.AndroidX.Security.SecurityCrypto" version="1.1.0.4-alpha07" exclude="Build,Analyzers" />
+        <dependency id="Xamarin.Google.Crypto.Tink.Android" version="1.18.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-ios26.0">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-maccatalyst26.0">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-windows10.0.19041">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Web.WebView2" version="1.0.3179.45" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-windows10.0.20348">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Web.WebView2" version="1.0.3179.45" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="System.Numerics.Vectors" version="4.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="Microsoft.Maui.Graphics" version="10.0.1" exclude="Build,Analyzers" />
+        <dependency id="System.Numerics.Vectors" version="4.6.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

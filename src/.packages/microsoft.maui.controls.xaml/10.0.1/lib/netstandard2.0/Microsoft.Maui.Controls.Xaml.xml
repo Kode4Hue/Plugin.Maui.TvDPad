@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Maui.Controls.Xaml</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Maui.Controls.Embedding.EmbeddingExtensions">
+            <summary>
+            A set of extension methods that allow for embedding a MAUI view within a native application.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.Embedding.EmbeddingExtensions.UseMauiEmbeddedApp``1(Microsoft.Maui.Hosting.MauiAppBuilder)">
+            <summary>
+            Configures the <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to use the specified <typeparamref name="TApp"/> as the embedded application type.
+            </summary>
+            <typeparam name="TApp">The type to use as the embedded application.</typeparam>
+            <param name="builder">The <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to configure.</param>
+            <returns>The configured <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.Embedding.EmbeddingExtensions.UseMauiEmbeddedApp``1(Microsoft.Maui.Hosting.MauiAppBuilder,System.Func{System.IServiceProvider,``0})">
+            <summary>
+            Configures the <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to use the specified <typeparamref name="TApp"/> as the embedded application type.
+            </summary>
+            <typeparam name="TApp">The type to use as the embedded application.</typeparam>
+            <param name="builder">The <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to configure.</param>
+            <param name="implementationFactory">A factory to create the specified <typeparamref name="TApp"/> using the services provided in a <see cref="T:System.IServiceProvider"/>.</param>
+            <returns>The configured <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.Hosting.AppHostBuilderExtensions.UseMauiApp``1(Microsoft.Maui.Hosting.MauiAppBuilder)">
+            <summary>
+            Configures the <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to use the specified <typeparamref name="TApp"/> as the main application type.
+            </summary>
+            <typeparam name="TApp">The type to use as the application.</typeparam>
+            <param name="builder">The <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to configure.</param>
+            <returns>The configured <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.Hosting.AppHostBuilderExtensions.UseMauiApp``1(Microsoft.Maui.Hosting.MauiAppBuilder,System.Func{System.IServiceProvider,``0})">
+            <summary>
+            Configures the <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to use the specified <typeparamref name="TApp"/> as the main application type.
+            </summary>
+            <typeparam name="TApp">The type to use as the application.</typeparam>
+            <param name="builder">The <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/> to configure.</param>
+            <param name="implementationFactory">A factory to create the specified <typeparamref name="TApp"/> using the services provided in a <see cref="T:System.IServiceProvider"/>.</param>
+            <returns>The configured <see cref="T:Microsoft.Maui.Hosting.MauiAppBuilder"/>.</returns>
+        </member>
+    </members>
+</doc>

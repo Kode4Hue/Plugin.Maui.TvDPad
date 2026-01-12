@@ -15,14 +15,29 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+
+      # ⚡ Cache .NET SDK + MAUI workloads
+      - name: Cache .NET workloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\.dotnet
+          key: dotnet-${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            dotnet-${{ runner.os }}-maui-
+
+      # 🔑 REQUIRED for net10.0-android MAUI projects
+      - name: Install MAUI Android workload
+        run: dotnet workload install maui-android
 
       - name: Restore
         run: dotnet restore src/Plugin.Maui.TvDPad.sln
@@ -31,5 +46,7 @@ jobs:
         run: dotnet build src/Plugin.Maui.TvDPad.sln --configuration ${{ matrix.configuration }} --no-restore
 
       - name: Test
-        run: |
-          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+        run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
+          --configuration ${{ matrix.configuration }} `
+          --no-build `
+          --verbosity normal

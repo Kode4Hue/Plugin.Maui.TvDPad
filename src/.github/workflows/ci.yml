@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore .NET workloads (install required MAUI workloads)
+        run: |
+          echo "Running 'dotnet workload restore' to install required MAUI workloads"
+          dotnet workload restore
+
+      - name: Restore solution
+        run: dotnet restore src/Plugin.Maui.TvDPad.sln
+
+      - name: Build
+        run: dotnet build src/Plugin.Maui.TvDPad.sln --configuration ${{ matrix.configuration }} --no-restore
+
+      - name: Test
+        run: |
+          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj --configuration ${{ matrix.configuration }} --no-build --verbosity normal

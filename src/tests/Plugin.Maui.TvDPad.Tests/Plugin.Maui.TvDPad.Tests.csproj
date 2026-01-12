@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Fixed ProjectReference path: go up two levels from the tests project folder to reach the library project -->
+    <!-- Use two-level relative path from src/tests to src/Plugin.Maui.TvDPad -->
     <ProjectReference Include="..\..\Plugin.Maui.TvDPad\Plugin.Maui.TvDPad.csproj" />
   </ItemGroup>
 

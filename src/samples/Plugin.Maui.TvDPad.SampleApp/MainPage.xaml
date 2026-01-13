@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Plugin.Maui.TvDPad.SampleApp.MainPage"
+    BackgroundColor="{StaticResource RastaBackground}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="RastaBackground">#0B0F0B</Color>
+            <Color x:Key="RastaText">#F4F3E6</Color>
+            <Color x:Key="RastaMuted">#B7B3A2</Color>
+            <Color x:Key="RastaGreen">#1DB954</Color>
+            <Color x:Key="RastaYellow">#F2C94C</Color>
+            <Color x:Key="RastaRed">#EB5757</Color>
+            <Color x:Key="RastaSurface">#121A12</Color>
+            <Color x:Key="RastaBorder">#2A3A2A</Color>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource RastaText}" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource RastaSurface}" />
+                <Setter Property="TextColor" Value="{StaticResource RastaText}" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="14,10" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Padding="24" RowDefinitions="Auto,Auto,Auto,*">
+        <Label Text="TV DPad Sample" FontSize="22" FontAttributes="Bold" />
+        <Label Grid.Row="1" Text="Use Android TV / Fire TV remote: DPAD, ENTER/CENTER, BACK." FontSize="14" TextColor="{StaticResource RastaMuted}" />
+        <Label Grid.Row="2" Text="(UI is built in code-behind for TV focus handling)" FontSize="12" TextColor="{StaticResource RastaMuted}" />
+    </Grid>
+</ContentPage>

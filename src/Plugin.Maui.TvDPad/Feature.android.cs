@@ -14,7 +14,14 @@ partial class FeatureImplementation : IFeature
 	static DPadKey? lastToastKey = null;
 	static bool? lastToastIsKeyDown = null;
 	static long lastToastTicks = 0;
-	const int ToastDebounceMs = 300;
+	static Toast? activeToast = null;
+
+	// Keep visual feedback snappy on TV remotes.
+	const int ToastDebounceMs = 75;
+
+	// Default to off for performance; callers/sample app can enable.
+	public static bool EnableToastFeedback { get; set; } = false;
+	public static bool EnableVerboseLogging { get; set; } = false;
 
 	private partial bool GetIsSupported()
 	{
@@ -34,22 +41,34 @@ partial class FeatureImplementation : IFeature
 
 		if (keyEvent != null && keyEvent.RepeatCount > 0)
 		{
-			Log.Info(TAG, $"HandleKeyDown ignoring repeat for {keyCode} repeat={keyEvent.RepeatCount}");
+			if (EnableVerboseLogging)
+				try { Log.Info(TAG, $"HandleKeyDown ignoring repeat for {keyCode} repeat={keyEvent.RepeatCount}"); } catch { }
+
 			var repeatArgs = new DPadKeyEventArgs(dpadKey.Value, isKeyDown: true);
 			OnKeyDown(repeatArgs);
 			return repeatArgs.Handled;
 		}
 
-		try
+		if (EnableToastFeedback)
 		{
-			Log.Info(TAG, $"HandleKeyDown mapped {keyCode} => {dpadKey}");
-			string label = GetDPadLabel(dpadKey.Value);
-			if (ShouldShowToast(dpadKey.Value, true))
+			try
 			{
-				Toast.MakeText(global::Android.App.Application.Context, $"DPad: {label}", ToastLength.Short).Show();
+				if (EnableVerboseLogging)
+					try { Log.Info(TAG, $"HandleKeyDown mapped {keyCode} => {dpadKey}"); } catch { }
+
+				string label = GetDPadLabel(dpadKey.Value);
+				if (ShouldShowToast(dpadKey.Value, true))
+				{
+					lock (toastLock)
+					{
+						activeToast?.Cancel();
+						activeToast = Toast.MakeText(global::Android.App.Application.Context, $"DPad: {label}", ToastLength.Short);
+						activeToast.Show();
+					}
+				}
 			}
+			catch { }
 		}
-		catch { }
 
 		var args = new DPadKeyEventArgs(dpadKey.Value, isKeyDown: true);
 		OnKeyDown(args);
@@ -62,6 +81,8 @@ partial class FeatureImplementation : IFeature
 		if (dpadKey == null)
 			return false;
 
+		// Some remotes/devices can emit duplicate Up events; keep the suppression window short
+		// so navigation still feels immediate.
 		if (keyEvent != null)
 		{
 			long eventMs = keyEvent.EventTime;
@@ -70,7 +91,9 @@ partial class FeatureImplementation : IFeature
 				long lastMs = lastToastTicks / TimeSpan.TicksPerMillisecond;
 				if (lastToastKey == dpadKey && lastToastIsKeyDown == false && Math.Abs(eventMs - lastMs) < ToastDebounceMs)
 				{
-					Log.Info(TAG, $"HandleKeyUp skipping duplicate event for {keyCode} eventMs={eventMs} lastMs={lastMs}");
+					if (EnableVerboseLogging)
+						try { Log.Info(TAG, $"HandleKeyUp skipping duplicate event for {keyCode} eventMs={eventMs} lastMs={lastMs}"); } catch { }
+
 					var skipArgs = new DPadKeyEventArgs(dpadKey.Value, isKeyDown: false);
 					OnKeyUp(skipArgs);
 					return skipArgs.Handled;
@@ -78,7 +101,8 @@ partial class FeatureImplementation : IFeature
 			}
 		}
 
-		try { Log.Info(TAG, $"HandleKeyUp mapped {keyCode} => {dpadKey}"); } catch { }
+		if (EnableVerboseLogging)
+			try { Log.Info(TAG, $"HandleKeyUp mapped {keyCode} => {dpadKey}"); } catch { }
 
 		var args = new DPadKeyEventArgs(dpadKey.Value, isKeyDown: false);
 		OnKeyUp(args);

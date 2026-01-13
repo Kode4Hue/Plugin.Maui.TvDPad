@@ -54,35 +54,59 @@ public partial class FeatureImplementation : IFeature
 
 	protected virtual void OnKeyDown(DPadKeyEventArgs e)
 	{
-		if (isFocusNavigationEnabled && IsDirectionalKey(e.Key))
+		if (isFocusNavigationEnabled && IsDirectionalKey(e.Key) && FocusNavigationRequested != null)
 		{
 			var focusArgs = new FocusNavigationEventArgs(e.Key);
 			OnFocusNavigationRequested(focusArgs);
 			if (focusArgs.Handled) e.Handled = true;
 		}
 
-		if (KeyDown == null) return;
+		var handler = KeyDown;
+		if (handler == null) return;
+
+		if (MainThread.IsMainThread)
+		{
+			try { handler.Invoke(this, e); } catch { }
+			return;
+		}
+
 		MainThread.BeginInvokeOnMainThread(() =>
 		{
-			try { KeyDown.Invoke(this, e); } catch { }
+			try { handler.Invoke(this, e); } catch { }
 		});
 	}
 
 	protected virtual void OnKeyUp(DPadKeyEventArgs e)
 	{
-		if (KeyUp == null) return;
+		var handler = KeyUp;
+		if (handler == null) return;
+
+		if (MainThread.IsMainThread)
+		{
+			try { handler.Invoke(this, e); } catch { }
+			return;
+		}
+
 		MainThread.BeginInvokeOnMainThread(() =>
 		{
-			try { KeyUp.Invoke(this, e); } catch { }
+			try { handler.Invoke(this, e); } catch { }
 		});
 	}
 
 	protected virtual void OnFocusNavigationRequested(FocusNavigationEventArgs e)
 	{
-		if (FocusNavigationRequested == null) return;
+		var handler = FocusNavigationRequested;
+		if (handler == null) return;
+
+		if (MainThread.IsMainThread)
+		{
+			try { handler.Invoke(this, e); } catch { }
+			return;
+		}
+
 		MainThread.BeginInvokeOnMainThread(() =>
 		{
-			try { FocusNavigationRequested.Invoke(this, e); } catch { }
+			try { handler.Invoke(this, e); } catch { }
 		});
 	}
 

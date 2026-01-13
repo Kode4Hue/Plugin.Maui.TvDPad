@@ -1,7 +1,6 @@
-using Microsoft.Maui;
-using Microsoft.Maui.Hosting;
+﻿using Microsoft.Extensions.Logging;
 
-namespace TestRunner;
+namespace Plugin.Maui.TvDPad.SampleApp;
 
 public static class MauiProgram
 {
@@ -9,8 +8,11 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseMauiApp<App>()
-            .ConfigureFonts(fonts => { });
+            .UseMauiApp<App>();
+
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
 
         return builder.Build();
     }

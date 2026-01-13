@@ -29,15 +29,19 @@ jobs:
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
 
-      - name: Build test app (Debug)
+      - name: Build Test Runner APK
         run: |
-          dotnet build samples/TestRunner/TestRunner.csproj -c Debug -f net10.0-android /p:AndroidPackageFormat=apk
+          # Dynamically find the project to avoid MSB1009 path errors
+          PROJECT_FILE=$(find . -name "TestRunner.csproj" | head -n 1)
+          echo "PROJECT_PATH=$PROJECT_FILE" >> $GITHUB_ENV
+          dotnet build "$PROJECT_FILE" -c Debug -f net10.0-android /p:AndroidPackageFormat=apk
 
-      - name: Find APK
-        id: find-apk
+      - name: Identify APK Path
         run: |
-          apk=$(find samples/TestRunner -type f -name "*Debug*.apk" | head -n 1)
-          echo "APK_PATH=$apk" >> $GITHUB_ENV
+          # Find the generated APK
+          APK_FILE=$(find . -type f -name "*Debug*.apk" | head -n 1)
+          echo "Found APK: $APK_FILE"
+          echo "APK_PATH=$APK_FILE" >> $GITHUB_ENV
 
       - name: Run Tests on Android TV Emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -51,7 +55,7 @@ jobs:
             dotnet tool install --global Microsoft.DotNet.XHarness.CLI
             export PATH="$PATH:$HOME/.dotnet/tools"
             
-            # Run tests. XHarness pulls files from the device to --output-directory
+            # package-name must match the ApplicationId in your TestRunner project
             xharness android test \
               --app "$APK_PATH" \
               --package-name "com.companyname.testrunner" \
@@ -59,23 +63,20 @@ jobs:
               --timeout "00:10:00" \
               --verbosity=Debug
 
-      - name: Prepare Test Results
+      - name: Process Test Results
         if: always()
         run: |
-          # Ensure directory exists and is readable
           mkdir -p test-results
           if [ -d "xharness-output" ]; then
-            # Find any XML file (XHarness often names them after the device/timestamp)
-            # and copy it to a predictable location for the reporter
+            # Recursively find any XML and flatten it into the test-results folder
             find xharness-output -name "*.xml" -exec cp {} test-results/results.xml \;
             chmod -R 777 test-results
-            echo "Files found in xharness-output:"
-            ls -R xharness-output
+            echo "Results found and moved to test-results/results.xml"
           else
-            echo "XHarness output directory not found!"
+            echo "xharness-output directory missing. Tests likely failed to start."
           fi
 
-      - name: Test Report
+      - name: Publish Test Report
         uses: dorny/test-reporter@v1
         if: always()
         with:
@@ -83,7 +84,7 @@ jobs:
           path: 'test-results/results.xml'
           reporter: java-junit
 
-      - name: Summary to Job Log
+      - name: Write Job Summary
         if: always()
         run: |
           echo "### 🚀 Android TV Test Summary" >> $GITHUB_STEP_SUMMARY
@@ -91,15 +92,42 @@ jobs:
             PASSED=$(grep -c "<testcase" test-results/results.xml || true)
             FAILED=$(grep -c "<failure" test-results/results.xml || true)
             echo "* **Status:** $([ "$FAILED" -eq "0" ] && echo "✅ Passed" || echo "❌ Failed")" >> $GITHUB_STEP_SUMMARY
-            echo "* **Tests Found:** $PASSED" >> $GITHUB_STEP_SUMMARY
-            echo "* **Failures:** $FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "* **Tests Executed:** $PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "* **Failures Detected:** $FAILED" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ No XML results were generated. Check 'Run Tests' logs for app crashes." >> $GITHUB_STEP_SUMMARY
+            echo "❌ No XML results generated. Check the 'Run Tests' step for device/app crashes." >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Upload Artifacts
+      - name: Store Logs as Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: full-xharness-logs
+          name: android-tv-logs
           path: xharness-output
+
+  publish:
+    name: Build and Publish Package
+    runs-on: ubuntu-latest
+    needs: android-tests
+    # Only publish if tests passed and we are pushing a version tag
+    if: success() && github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Pack Library
+        run: |
+          # Finds the library project and packs it
+          LIB_PROJ=$(find src -name "*.csproj" | grep -v "Test" | head -n 1)
+          dotnet pack "$LIB_PROJ" -c Release -o ./artifacts
+
+      - name: Push to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json

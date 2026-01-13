@@ -51,20 +51,20 @@ jobs:
           --configuration ${{ matrix.configuration }} `
           --no-restore
 
-      # ✅ Run tests WITH VISIBLE RESULTS
+      # ✅ Run tests WITH guaranteed output + results
       - name: Test
         run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
           --framework net10.0 `
           --configuration ${{ matrix.configuration }} `
           --no-build `
-          --logger "console;verbosity=normal" `
-          --logger "trx;LogFileName=test-results.trx"
+          --logger "console;verbosity=detailed" `
+          --logger "trx;LogFileName=tests.trx" `
+          --results-directory ./TestResults
 
-      # 📊 Publish test results to GitHub
+      # 📊 Upload test results
       - name: Publish test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: |
-            **/test-results.trx
+          path: TestResults

@@ -39,20 +39,32 @@ jobs:
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
 
-      # ✅ RESTORE (Android TFM ONLY — correct method)
+      # ✅ Restore Android TFM only
       - name: Restore (Android)
         run: dotnet restore src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           -p:TargetFramework=net10.0-android
 
-      # ✅ BUILD (Android TFM ONLY)
+      # ✅ Build Android TFM only
       - name: Build (Android)
         run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           --framework net10.0-android `
           --configuration ${{ matrix.configuration }} `
           --no-restore
 
+      # ✅ Run tests WITH VISIBLE RESULTS
       - name: Test
         run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
+          --framework net10.0 `
           --configuration ${{ matrix.configuration }} `
           --no-build `
-          --verbosity normal
+          --logger "console;verbosity=normal" `
+          --logger "trx;LogFileName=test-results.trx"
+
+      # 📊 Publish test results to GitHub
+      - name: Publish test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            **/test-results.trx

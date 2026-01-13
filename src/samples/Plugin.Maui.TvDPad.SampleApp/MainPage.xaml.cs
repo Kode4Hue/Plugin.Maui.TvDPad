@@ -42,7 +42,7 @@ public partial class MainPage : ContentPage
         // Intentionally no InitializeComponent(); this page is fully programmatic to avoid
         // XAML/code-behind mismatches on TV builds.
 
-        Title = "TV Remote Tester";
+        // No page Title: TV UI runs without a top navigation bar.
 
         _status = new Label { FontSize = 12, TextColor = RastaMuted, InputTransparent = true };
         _last = new Label { FontSize = 18, TextColor = RastaText, FontAttributes = FontAttributes.Bold, InputTransparent = true };

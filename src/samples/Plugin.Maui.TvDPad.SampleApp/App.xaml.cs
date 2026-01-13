@@ -8,11 +8,11 @@ namespace Plugin.Maui.TvDPad.SampleApp
         {
             InitializeComponent();
 
-            // Keep startup simple for Android TV: no Shell routing.
+            // Keep startup simple for Android TV: no Shell routing and no top navigation bar.
             // If something goes wrong creating MainPage, show a visible fallback.
             try
             {
-                MainPage = new NavigationPage(new MainPage());
+                MainPage = new MainPage();
             }
             catch (Exception ex)
             {

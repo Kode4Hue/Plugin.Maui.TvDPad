@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xamarin.AndroidX.AppCompat.AppCompatResources</name>
+    </assembly>
+    <members>
+        <member name="T:AndroidX.AppCompat.Graphics.Drawable.DrawableContainer">
+            <summary>
+            
+            </summary>
+            <seealso href="https://github.com/dotnet/maui/issues/16074" />
+            <seealso href="https://github.com/xamarin/Xamarin.Forms/issues/15668" />
+            <seealso href="https://github.com/xamarin/AndroidX/issues/690#issuecomment-1414325720" />
+        </member>
+        <member name="T:AndroidX.AppCompat.Graphics.Drawable.DrawableWrapper">
+            <summary>
+            
+            </summary>
+            <seealso href="https://github.com/dotnet/maui/issues/16074" />
+            <seealso href="https://github.com/xamarin/Xamarin.Forms/issues/15668" />
+            <seealso href="https://github.com/xamarin/AndroidX/issues/690#issuecomment-1414325720" />
+        </member>
+    </members>
+</doc>

@@ -2,54 +2,18 @@ name: CI
 
 on:
   push:
+    branches:
+      - '*'
   pull_request:
+    branches:
+      - '*'
+  workflow_dispatch: {}
 
 jobs:
-  test-windows:
-    name: Tests (Windows)
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "10.0.101"
-          cache: true
-
-      - name: Dotnet info
-        run: dotnet --info
-
-      # Fix for NETSDK1147: install/restore required MAUI workloads (maui-android, etc.)
-      - name: Restore workloads
-        run: dotnet workload restore
-
-      - name: Restore
-        run: dotnet restore src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj
-
-      - name: Test
-        run: >
-          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj
-          --configuration Release
-          --verbosity normal
-          --logger "console;verbosity=detailed"
-          --logger "trx;LogFileName=tests-windows.trx"
-          --results-directory "$env:GITHUB_WORKSPACE\TestResults"
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-windows
-          path: |
-            TestResults/**/*.trx
-
-  test-macos:
-    name: Tests (macOS)
+  android-tests:
+    name: Android TV Tests
     runs-on: macos-latest
-
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,33 +21,81 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.101"
-          cache: true
+          dotnet-version: '10.0.x'
 
-      - name: Dotnet info
-        run: dotnet --info
+      - name: Install MAUI Android workload
+        run: dotnet workload install maui-android --yes
 
-      # Keeps restore consistent and avoids workload errors on mac too
-      - name: Restore workloads
-        run: dotnet workload restore
-
-      - name: Restore
-        run: dotnet restore src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj
-
-      # Fix for MSB1008: no stray "\" args; use proper multiline bash
-      - name: Test
+      - name: Build test app (Debug)
         run: |
-          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj \
-            --configuration Release \
-            --verbosity normal \
-            --logger "console;verbosity=detailed" \
-            --logger "trx;LogFileName=tests-macos.trx" \
-            --results-directory "$GITHUB_WORKSPACE/TestResults"
+          dotnet build samples/TestRunner/TestRunner.csproj -c Debug -f net10.0-android /p:AndroidPackageFormat=apk
+
+      - name: Find APK
+        id: find-apk
+        run: |
+          apk=$(find samples/TestRunner -type f -name "*Debug*.apk" | head -n 1)
+          echo "APK_PATH=$apk" >> $GITHUB_ENV
+
+      - name: Run Tests on Android TV Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          arch: x86_64
+          target: android-tv
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
+          script: |
+            dotnet tool install --global Microsoft.DotNet.XHarness.CLI
+            
+            # Run tests and output to the 'test-results' directory
+            # The 'exit code' of this command determines if the job fails or passes
+            xharness android test \
+              --app "$APK_PATH" \
+              --package-name "com.companyname.testrunner" \
+              --output-directory "test-results" \
+              --timeout "00:10:00"
+
+      - name: Display Test Results in Logs
+        if: always() # Run this even if the tests fail
+        run: |
+          echo "### Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          if [ -d "test-results" ]; then
+            # Find the XML result file and print a summary to the GitHub UI and Logs
+            # We look for common test result file patterns produced by XHarness/xUnit
+            find test-results -name "*.xml" -exec echo "Processing {}" \;
+            
+            # Simple log output to verify status in the console
+            echo "--- CONSOLE LOG SUMMARY ---"
+            grep -E "test|pass|fail|skip" test-results/*.xml || echo "No XML results found to parse."
+          else
+            echo "No test results directory found." >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-macos
-          path: |
-            TestResults/**/*.trx
+          name: test-results
+          path: test-results
+
+  publish:
+    name: Build and publish package
+    runs-on: ubuntu-latest
+    needs: android-tests
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build and pack
+        run: |
+          dotnet pack src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj -c Release -o ./artifacts
+
+      - name: Publish to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json

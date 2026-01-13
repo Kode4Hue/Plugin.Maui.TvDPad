@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestRunner.MainPage">
+    <VerticalStackLayout Padding="20">
+        <Label x:Name="StatusLabel" Text="Ready" />
+        <Button x:Name="UpButton" Text="Up" />
+        <Button x:Name="DownButton" Text="Down" />
+        <Button x:Name="LeftButton" Text="Left" />
+        <Button x:Name="RightButton" Text="Right" />
+        <Button x:Name="CenterButton" Text="Center" />
+    </VerticalStackLayout>
+</ContentPage>

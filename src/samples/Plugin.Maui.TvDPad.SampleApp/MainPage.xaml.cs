@@ -19,12 +19,18 @@ public partial class MainPage : ContentPage
     static readonly Color RastaYellow = Color.FromArgb("#F2C94C");
     static readonly Color RastaRed = Color.FromArgb("#EB5757");
 
+    // Selection vs focus colors must be distinct.
+    static readonly Color RastaSelected = Color.FromArgb("#F2C94C");
+    static readonly Color RastaSelectedBorder = Color.FromArgb("#EB5757");
+
     readonly Label _status;
     readonly Label _last;
     readonly CollectionView _log;
     readonly ObservableCollection<string> _items = new();
 
     readonly Button?[,] _tiles = new Button?[3, 3];
+
+    Button? _selectedTile;
 
     // Turn off focus/key spam by default. Enable when diagnosing.
     const bool EnableEventLog = false;
@@ -291,7 +297,7 @@ public partial class MainPage : ContentPage
 
                 var b = new Button
                 {
-                    Text = isCenter ? "OK / CENTER" : $"Tile {index + 1}",
+                    Text = $"Tile {index + 1}",
                     WidthRequest = 180,
                     HeightRequest = 80,
                     BackgroundColor = RastaSurface,
@@ -305,10 +311,7 @@ public partial class MainPage : ContentPage
 
                 b.Focused += (_, __) =>
                 {
-                    b.BackgroundColor = RastaGreen;
-                    b.TextColor = Colors.Black;
-                    b.BorderColor = RastaYellow;
-                    b.BorderWidth = 2;
+                    ApplyTileVisualState(b);
 
                     if (_lastNavDirection is DPadKey.Left or DPadKey.Right or DPadKey.Up or DPadKey.Down)
                     {
@@ -328,31 +331,29 @@ public partial class MainPage : ContentPage
                         }
                     }
                 };
-                b.Unfocused += (_, __) =>
-                {
-                    b.BackgroundColor = RastaSurface;
-                    b.TextColor = RastaText;
-                    b.BorderColor = RastaBorder;
-                    b.BorderWidth = 1;
-                };
+
+                b.Unfocused += (_, __) => ApplyTileVisualState(b);
 
                 b.Pressed += (_, __) =>
                 {
-                    if (!b.IsFocused)
+                    if (!b.IsFocused && !ReferenceEquals(b, _selectedTile))
                         b.BackgroundColor = Color.FromArgb("#1A231A");
                 };
                 b.Released += (_, __) =>
                 {
                     if (!b.IsFocused)
-                        b.BackgroundColor = RastaSurface;
+                        ApplyTileVisualState(b);
                 };
 
                 b.Clicked += (_, __) =>
                 {
+                    SetSelectedTile(b);
+
+                    var label = $"Tile {index + 1}";
                     if (EnableEventLog)
-                        Log(isCenter ? "Clicked: OK / Center" : $"Clicked: Tile {index + 1}");
+                        Log($"Selected: {label}");
                     else
-                        _last.Text = $"Last: {(isCenter ? "Clicked: OK / Center" : $"Clicked: Tile {index + 1}")}";
+                        _last.Text = $"Last: Selected: {label}";
                 };
 
                 g.Add(b, c, r);
@@ -390,5 +391,50 @@ public partial class MainPage : ContentPage
         }
 
         return null;
+    }
+
+    void SetSelectedTile(Button? tile)
+    {
+        if (ReferenceEquals(_selectedTile, tile))
+            return;
+
+        var previous = _selectedTile;
+        _selectedTile = tile;
+
+        if (previous != null)
+            ApplyTileVisualState(previous);
+
+        if (tile != null)
+            ApplyTileVisualState(tile);
+    }
+
+    void ApplyTileVisualState(Button tile)
+    {
+        var isFocused = tile.IsFocused;
+        var isSelected = ReferenceEquals(tile, _selectedTile);
+
+        if (isFocused)
+        {
+            // Focus state wins while navigating.
+            tile.BackgroundColor = RastaGreen;
+            tile.TextColor = Colors.Black;
+            tile.BorderColor = RastaYellow;
+            tile.BorderWidth = 2;
+            return;
+        }
+
+        if (isSelected)
+        {
+            tile.BackgroundColor = RastaSelected;
+            tile.TextColor = Colors.White;
+            tile.BorderColor = RastaSelectedBorder;
+            tile.BorderWidth = 2;
+            return;
+        }
+
+        tile.BackgroundColor = RastaSurface;
+        tile.TextColor = RastaText;
+        tile.BorderColor = RastaBorder;
+        tile.BorderWidth = 1;
     }
 }

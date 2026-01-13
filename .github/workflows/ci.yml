@@ -25,8 +25,7 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # ⚡ Cache .NET SDK + MAUI workloads
-      - name: Cache .NET workloads
+      - name: Cache .NET workloads (Windows)
         uses: actions/cache@v4
         with:
           path: |
@@ -35,60 +34,38 @@ jobs:
           restore-keys: |
             dotnet-${{ runner.os }}-maui-
 
-      # 🔑 Android-only workload (Windows-safe)
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
 
-      # ✅ Restore Android TFM only for the MAUI library
-      - name: Restore (Android library)
+      - name: Restore (Android library only)
         run: dotnet restore src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           -p:TargetFramework=net10.0-android
 
-      # ✅ Build Android TFM only for the MAUI library
-      - name: Build (Android library)
+      - name: Build (Android library only)
         run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           --framework net10.0-android `
           --configuration ${{ matrix.configuration }} `
           --no-restore
 
-      # ✅ Prepare deterministic test results folder
-      - name: Prepare TestResults folder
-        run: New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\TestResults" | Out-Null
+  test:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        configuration: [Release]
 
-      # ✅ Restore tests while forcing referenced MAUI project to Android only (prevents iOS workload error)
-      - name: Restore (Tests)
-        run: dotnet restore src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
-          -p:TargetFramework=net10.0-android
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # ✅ Build tests with the same forced TFM (so dotnet test can run with --no-build)
-      - name: Build (Tests)
-        run: dotnet build src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
-          --configuration ${{ matrix.configuration }} `
-          -p:TargetFramework=net10.0-android `
-          --no-restore
-
-      # ✅ Run tests without rebuilding; emit console output + TRX into workspace
-      - name: Test
-        run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
-          --configuration ${{ matrix.configuration }} `
-          --no-build `
-          --verbosity normal `
-          --logger "console;verbosity=detailed" `
-          --logger "trx;LogFileName=tests.trx" `
-          --results-directory "$env:GITHUB_WORKSPACE\TestResults"
-
-      # 🔎 Debug visibility: show what got produced
-      - name: List TestResults
-        if: always()
-        run: |
-          Write-Host "Contents of TestResults:"
-          Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE\TestResults" | Select-Object FullName,Length
-
-      # 📦 Upload test results
-      - name: Publish test results
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          name: test-results
-          path: TestResults
-          if-no-files-found: warn
+          dotnet-version: '10.0.x'
+
+      - name: Cache .NET workloads (macOS)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.dotnet
+          key: dotnet-${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |

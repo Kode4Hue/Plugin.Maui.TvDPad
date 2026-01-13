@@ -2,19 +2,15 @@ name: CI
 
 on:
   push:
-    branches:
-      - '*'
+    branches: ['*']
   pull_request:
-    branches:
-      - '*'
+    branches: ['*']
   workflow_dispatch: {}
 
 jobs:
   build-android:
+    name: Build (Android) - Windows
     runs-on: windows-latest
-    strategy:
-      matrix:
-        configuration: [Release]
 
     steps:
       - name: Checkout
@@ -44,14 +40,47 @@ jobs:
       - name: Build (Android library only)
         run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           --framework net10.0-android `
-          --configuration ${{ matrix.configuration }} `
+          --configuration Release `
           --no-restore
 
-  test:
+  test-windows:
+    name: Unit Tests - Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Prepare TestResults folder
+        run: New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\TestResults" | Out-Null
+
+      # IMPORTANT:
+      # Run pure .NET unit tests. If your test project references the MAUI project and triggers iOS TFMs,
+      # this may fail on Windows. In that case, macOS job below will still validate tests.
+      - name: Test (Windows)
+        run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
+          --configuration Release `
+          --verbosity normal `
+          --logger "console;verbosity=detailed" `
+          --logger "trx;LogFileName=tests-windows.trx" `
+          --results-directory "$env:GITHUB_WORKSPACE\TestResults"
+
+      - name: Publish test results (Windows)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-windows
+          path: TestResults
+          if-no-files-found: warn
+
+  test-macos:
+    name: Unit Tests - macOS
     runs-on: macos-latest
-    strategy:
-      matrix:
-        configuration: [Release]
 
     steps:
       - name: Checkout
@@ -69,3 +98,26 @@ jobs:
             ~/.dotnet
           key: dotnet-${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
+            dotnet-${{ runner.os }}-maui-
+
+      - name: Install workloads (macOS)
+        run: dotnet workload restore src/Plugin.Maui.TvDPad.sln
+
+      - name: Prepare TestResults folder
+        run: mkdir -p TestResults
+
+      - name: Test (macOS)
+        run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj \
+          --configuration Release \
+          --verbosity normal \
+          --logger "console;verbosity=detailed" \
+          --logger "trx;LogFileName=tests-macos.trx" \
+          --results-directory ./TestResults
+
+      - name: Publish test results (macOS)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-macos
+          path: TestResults
+          if-no-files-found: warn

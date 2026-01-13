@@ -9,8 +9,8 @@ on:
 
 permissions:
   contents: read
-  checks: write        # Required for test-reporter to create the status check
-  pull-requests: write # Required if you want PR comments
+  checks: write
+  pull-requests: write
 
 jobs:
   android-tests:
@@ -27,7 +27,6 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Install MAUI Android workload
-        # Removed the --yes flag which caused the previous error
         run: dotnet workload install maui-android
 
       - name: Build test app (Debug)
@@ -51,35 +50,45 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           script: |
             dotnet tool install --global Microsoft.DotNet.XHarness.CLI
+            # We add --verbosity=Debug to see why it might fail to pull files
             xharness android test \
               --app "$APK_PATH" \
               --package-name "com.companyname.testrunner" \
               --output-directory "test-results" \
-              --timeout "00:10:00"
+              --timeout "00:10:00" \
+              --verbosity=Debug
 
-      # This makes the results visible in the "Checks" tab and PRs
+      # DEBUG STEP: This will show us exactly what XHarness pulled
+      - name: List Test Result Files
+        if: always()
+        run: |
+          echo "Checking directory: test-results"
+          ls -R test-results || echo "Directory test-results does not exist!"
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: always()
         with:
           name: Android TV Test Results
-          path: 'test-results/**/TestResults.xml'
-          reporter: java-junit # XHarness Android outputs JUnit style XML
+          # Changed path to look for ANY xml file in the results folder
+          path: 'test-results/**/*.xml' 
+          reporter: java-junit
 
-      # This creates the "Job Summary" dashboard you see on the run's main page
-      - name: Summary to Logs
+      - name: Summary to Job Log
         if: always()
         run: |
           echo "### 🚀 Android TV Test Summary" >> $GITHUB_STEP_SUMMARY
-          if [ -f test-results/TestResults.xml ]; then
-            # Simple bash to extract pass/fail counts for the log
-            PASSED=$(grep -c "<testcase" test-results/TestResults.xml || true)
-            FAILED=$(grep -c "<failure" test-results/TestResults.xml || true)
+          # Search for any XML result file and try to extract basic counts
+          RESULT_FILE=$(find test-results -name "*.xml" | head -n 1)
+          if [ -f "$RESULT_FILE" ]; then
+            PASSED=$(grep -c "<testcase" "$RESULT_FILE" || true)
+            FAILED=$(grep -c "<failure" "$RESULT_FILE" || true)
+            echo "* **File:** $RESULT_FILE" >> $GITHUB_STEP_SUMMARY
             echo "* **Status:** $([ "$FAILED" -eq "0" ] && echo "✅ Passed" || echo "❌ Failed")" >> $GITHUB_STEP_SUMMARY
             echo "* **Total Tests:** $PASSED" >> $GITHUB_STEP_SUMMARY
             echo "* **Failures:** $FAILED" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ No test results file found. Check the 'Run Tests' step for crashes." >> $GITHUB_STEP_SUMMARY
+            echo "❌ No test results found in test-results/ directory." >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Upload test results
@@ -91,24 +100,19 @@ jobs:
 
   publish:
     name: Build and publish package
-    runs-on: ubuntu-latest # Using Ubuntu for cheaper publish job
+    runs-on: ubuntu-latest
     needs: android-tests
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-
       - name: Build and pack
-        run: |
-          dotnet pack src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj -c Release -o ./artifacts
-
+        run: dotnet pack src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj -c Release -o ./artifacts
       - name: Publish to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          dotnet nuget push ./artifacts/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./artifacts/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json

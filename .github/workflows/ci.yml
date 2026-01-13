@@ -51,20 +51,31 @@ jobs:
           --configuration ${{ matrix.configuration }} `
           --no-restore
 
-      # ✅ Run tests WITH guaranteed output + results
+      # ✅ Create deterministic test results folder
+      - name: Prepare TestResults folder
+        run: New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\TestResults" | Out-Null
+
+      # ✅ Run tests (build + execute), with visible console output + TRX written to workspace
       - name: Test
         run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
-          --framework net10.0 `
           --configuration ${{ matrix.configuration }} `
-          --no-build `
+          --verbosity normal `
           --logger "console;verbosity=detailed" `
           --logger "trx;LogFileName=tests.trx" `
-          --results-directory ./TestResults
+          --results-directory "$env:GITHUB_WORKSPACE\TestResults"
 
-      # 📊 Upload test results
+      # 🔎 Debug visibility: show what got produced
+      - name: List TestResults
+        if: always()
+        run: |
+          Write-Host "Contents of TestResults:"
+          Get-ChildItem -Recurse "$env:GITHUB_WORKSPACE\TestResults" | Select-Object FullName,Length
+
+      # 📦 Upload test results
       - name: Publish test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: TestResults
+          if-no-files-found: warn

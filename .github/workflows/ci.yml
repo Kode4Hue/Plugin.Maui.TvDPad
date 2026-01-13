@@ -39,26 +39,39 @@ jobs:
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
 
-      # ✅ Restore Android TFM only
-      - name: Restore (Android)
+      # ✅ Restore Android TFM only for the MAUI library
+      - name: Restore (Android library)
         run: dotnet restore src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           -p:TargetFramework=net10.0-android
 
-      # ✅ Build Android TFM only
-      - name: Build (Android)
+      # ✅ Build Android TFM only for the MAUI library
+      - name: Build (Android library)
         run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
           --framework net10.0-android `
           --configuration ${{ matrix.configuration }} `
           --no-restore
 
-      # ✅ Create deterministic test results folder
+      # ✅ Prepare deterministic test results folder
       - name: Prepare TestResults folder
         run: New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\TestResults" | Out-Null
 
-      # ✅ Run tests (build + execute), with visible console output + TRX written to workspace
+      # ✅ Restore tests while forcing referenced MAUI project to Android only (prevents iOS workload error)
+      - name: Restore (Tests)
+        run: dotnet restore src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
+          -p:TargetFramework=net10.0-android
+
+      # ✅ Build tests with the same forced TFM (so dotnet test can run with --no-build)
+      - name: Build (Tests)
+        run: dotnet build src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
+          --configuration ${{ matrix.configuration }} `
+          -p:TargetFramework=net10.0-android `
+          --no-restore
+
+      # ✅ Run tests without rebuilding; emit console output + TRX into workspace
       - name: Test
         run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
           --configuration ${{ matrix.configuration }} `
+          --no-build `
           --verbosity normal `
           --logger "console;verbosity=detailed" `
           --logger "trx;LogFileName=tests.trx" `

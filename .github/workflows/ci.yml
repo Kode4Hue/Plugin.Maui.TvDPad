@@ -2,49 +2,11 @@ name: CI
 
 on:
   push:
-    branches: ['*']
   pull_request:
-    branches: ['*']
-  workflow_dispatch: {}
 
 jobs:
-  build-android:
-    name: Build (Android) - Windows
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-
-      - name: Cache .NET workloads (Windows)
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~\.dotnet
-          key: dotnet-${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            dotnet-${{ runner.os }}-maui-
-
-      - name: Install MAUI Android workload
-        run: dotnet workload install maui-android
-
-      - name: Restore (Android library only)
-        run: dotnet restore src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
-          -p:TargetFramework=net10.0-android
-
-      - name: Build (Android library only)
-        run: dotnet build src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj `
-          --framework net10.0-android `
-          --configuration Release `
-          --no-restore
-
   test-windows:
-    name: Unit Tests - Windows
+    name: Tests (Windows)
     runs-on: windows-latest
 
     steps:
@@ -54,32 +16,38 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: "10.0.101"
+          cache: true
 
-      - name: Prepare TestResults folder
-        run: New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\TestResults" | Out-Null
+      - name: Dotnet info
+        run: dotnet --info
 
-      # IMPORTANT:
-      # Run pure .NET unit tests. If your test project references the MAUI project and triggers iOS TFMs,
-      # this may fail on Windows. In that case, macOS job below will still validate tests.
-      - name: Test (Windows)
-        run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj `
-          --configuration Release `
-          --verbosity normal `
-          --logger "console;verbosity=detailed" `
-          --logger "trx;LogFileName=tests-windows.trx" `
+      # Fix for NETSDK1147: install/restore required MAUI workloads (maui-android, etc.)
+      - name: Restore workloads
+        run: dotnet workload restore
+
+      - name: Restore
+        run: dotnet restore src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj
+
+      - name: Test
+        run: >
+          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj
+          --configuration Release
+          --verbosity normal
+          --logger "console;verbosity=detailed"
+          --logger "trx;LogFileName=tests-windows.trx"
           --results-directory "$env:GITHUB_WORKSPACE\TestResults"
 
-      - name: Publish test results (Windows)
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-windows
-          path: TestResults
-          if-no-files-found: warn
+          path: |
+            TestResults/**/*.trx
 
   test-macos:
-    name: Unit Tests - macOS
+    name: Tests (macOS)
     runs-on: macos-latest
 
     steps:
@@ -89,35 +57,33 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: "10.0.101"
+          cache: true
 
-      - name: Cache .NET workloads (macOS)
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.dotnet
-          key: dotnet-${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            dotnet-${{ runner.os }}-maui-
+      - name: Dotnet info
+        run: dotnet --info
 
-      - name: Install workloads (macOS)
-        run: dotnet workload restore src/Plugin.Maui.TvDPad.sln
+      # Keeps restore consistent and avoids workload errors on mac too
+      - name: Restore workloads
+        run: dotnet workload restore
 
-      - name: Prepare TestResults folder
-        run: mkdir -p TestResults
+      - name: Restore
+        run: dotnet restore src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj
 
-      - name: Test (macOS)
-        run: dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj \
-          --configuration Release \
-          --verbosity normal \
-          --logger "console;verbosity=detailed" \
-          --logger "trx;LogFileName=tests-macos.trx" \
-          --results-directory ./TestResults
+      # Fix for MSB1008: no stray "\" args; use proper multiline bash
+      - name: Test
+        run: |
+          dotnet test src/tests/Plugin.Maui.TvDPad.Tests/Plugin.Maui.TvDPad.Tests.csproj \
+            --configuration Release \
+            --verbosity normal \
+            --logger "console;verbosity=detailed" \
+            --logger "trx;LogFileName=tests-macos.trx" \
+            --results-directory "$GITHUB_WORKSPACE/TestResults"
 
-      - name: Publish test results (macOS)
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-macos
-          path: TestResults
-          if-no-files-found: warn
+          path: |
+            TestResults/**/*.trx

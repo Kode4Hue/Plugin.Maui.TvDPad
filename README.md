@@ -1,6 +1,6 @@
 # Plugin.Maui.TvDPad - D-Pad Navigation for .NET MAUI
 
-> ⚠️ **Current Focus: Android TV**
+> ⚠️ **Current Focus: Android TV and Amazon Fire Stick**
 
 `Plugin.Maui.TvDPad` provides D-Pad navigation support for .NET MAUI applications, enabling developers to build TV-optimized interfaces with full remote control support.
 

@@ -36,7 +36,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageReleaseNotes>
-			Initial beta release of Plugin.Maui.TvDPad.
+			Initial alpha release of Plugin.Maui.TvDPad.
 
 			Features:
 			- Cross-platform D-Pad input abstraction for .NET MAUI

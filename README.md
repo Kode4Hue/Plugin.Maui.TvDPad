@@ -16,7 +16,23 @@
 
 ## Installation
 
-### Manual Installation
+### Install via NuGet (recommended)
+
+NuGet package: http://www.nuget.org/packages/Plugin.Maui.TvDPad  
+Current version: `1.0.0-alpha.1`
+
+In your .NET MAUI Android project (`net10.0-android`):
+
+- **Visual Studio**: right-click your MAUI project -> `Manage NuGet Packages...` -> search for `Plugin.Maui.TvDPad` -> install.
+- **CLI**:
+
+```bash
+dotnet add <YourMauiProject>.csproj package Plugin.Maui.TvDPad --version 1.0.0-alpha.1
+```
+
+After installing, build once so MAUI restores the package and generates platform resources.
+
+### Manual installation (project reference)
 
 1. Clone or download this repository
 2. Add a project reference to `src/Plugin.Maui.TvDPad/Plugin.Maui.TvDPad.csproj` in your MAUI project

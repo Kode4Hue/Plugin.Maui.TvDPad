@@ -130,6 +130,14 @@ public partial class MainPage : ContentPage
 }
 ```
 
+## Sample App
+
+The repository includes a .NET MAUI sample project you can run to see how to wire up key event forwarding, focus navigation, and tile selection:
+
+- `samples/Plugin.Maui.TvDPad.SampleApp` (`Plugin.Maui.TvDPad.SampleApp`)
+
+![Plugin.Maui.TvDPad.SampleApp screenshot](docs/images/sample-app-screenshot.png)
+
 ## Testing on Android TV
 
 - Use an Android TV emulator image or a physical Android TV device

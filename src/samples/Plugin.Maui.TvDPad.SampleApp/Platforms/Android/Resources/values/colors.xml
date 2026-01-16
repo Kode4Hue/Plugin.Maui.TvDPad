@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MAUI Android theme + splash pulls from these (removes default purple) -->
+    <color name="colorPrimary">#1DB954</color>
+    <color name="colorPrimaryDark">#0B0F0B</color>
+    <color name="colorAccent">#F2C94C</color>
+</resources>

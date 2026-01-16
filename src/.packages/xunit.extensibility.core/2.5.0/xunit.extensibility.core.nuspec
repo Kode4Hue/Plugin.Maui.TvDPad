@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata minClientVersion="2.12">
+    <id>xunit.extensibility.core</id>
+    <version>2.5.0</version>
+    <authors>jnewkirk,bradwilson</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>_content/logo-128-transparent.png</icon>
+    <readme>_content/README.md</readme>
+    <description>Includes xunit.core.dll for extensibility purposes. Supports .NET 4.5.2 or later, and .NET Standard 1.1.</description>
+    <copyright>Copyright (C) .NET Foundation</copyright>
+    <repository type="git" url="https://github.com/xunit/xunit" commit="92f31c4c3a4adf391a19e6c9b531f4195636f132" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5.2">
+        <dependency id="xunit.abstractions" version="2.0.3" />
+      </group>
+      <group targetFramework=".NETStandard1.1">
+        <dependency id="NETStandard.Library" version="1.6.1" />
+        <dependency id="xunit.abstractions" version="2.0.3" />
+      </group>
+    </dependencies>
+    <references>
+      <reference file="xunit.core.dll" />
+      <reference file="xunit.core.xml" />
+    </references>
+  </metadata>
+</package>

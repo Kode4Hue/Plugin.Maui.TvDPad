@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Xamarin.Google.Crypto.Tink.Android</id>
+    <version>1.17.0.2</version>
+    <title>.NET for Android and MAUI bindings for the Android Java library 'com.google.crypto.tink:tink-android'.</title>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT AND Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/MIT%20AND%20Apache-2.0</licenseUrl>
+    <icon>icon.png</icon>
+    <readme>readme.md</readme>
+    <projectUrl>https://aka.ms/android-libraries</projectUrl>
+    <description>.NET for Android and MAUI bindings for the Android Java library 'com.google.crypto.tink:tink-android'.
+
+Library description: Tink is a small cryptographic library that provides a safe, simple, agile and fast way to accomplish some common cryptographic tasks.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>xamarin artifact=com.google.crypto.tink:tink-android artifact_versioned=com.google.crypto.tink:tink-android:1.17.0</tags>
+    <repository type="git" url="https://github.com/xamarin/AndroidX.git" branch="refs/tags/20250602-weekly-stable-updates-20250605" commit="2b2e983911517bb02c07fe4dd0ba440910e0a45a" />
+    <dependencies>
+      <group targetFramework="net8.0-android34.0">
+        <dependency id="Xamarin.AndroidX.Annotation.Jvm" version="1.9.1.4" include="All" />
+        <dependency id="Xamarin.Google.Code.FindBugs.JSR305" version="3.0.2.20" include="All" />
+        <dependency id="GoogleGson" version="2.13.0.2" include="All" />
+        <dependency id="Xamarin.Google.ErrorProne.Annotations" version="2.37.0.2" include="All" />
+      </group>
+      <group targetFramework="net10.0-android36.0">
+        <dependency id="Xamarin.AndroidX.Annotation.Jvm" version="1.9.1.4" include="All" />
+        <dependency id="Xamarin.Google.Code.FindBugs.JSR305" version="3.0.2.20" include="All" />
+        <dependency id="GoogleGson" version="2.13.0.2" include="All" />
+        <dependency id="Xamarin.Google.ErrorProne.Annotations" version="2.37.0.2" include="All" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

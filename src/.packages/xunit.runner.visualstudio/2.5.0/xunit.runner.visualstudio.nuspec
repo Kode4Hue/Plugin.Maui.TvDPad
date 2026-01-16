@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>xunit.runner.visualstudio</id>
+    <version>2.5.0</version>
+    <title>xUnit.net [Runner: Visual Studio]</title>
+    <authors>.NET Foundation and Contributors</authors>
+    <developmentDependency>true</developmentDependency>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>_content/logo-128-transparent.png</icon>
+    <readme>_content/README.md</readme>
+    <projectUrl>https://github.com/xunit/visualstudio.xunit</projectUrl>
+    <description>Visual Studio 2019 16.8+ Test Explorer runner for the xUnit.net framework. Capable of running xUnit.net v1.9.2 and v2.0+ tests. Supports .NET 4.6.2 or later, and .NET 6 or later.</description>
+    <copyright>Copyright (c) .NET Foundation and Contributors.</copyright>
+    <repository type="git" url="https://github.com/xunit/visualstudio.xunit" commit="5ebf84cd7537a3810772a1af751ce32d9d3930dc" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.2" />
+      <group targetFramework="net6.0" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="mscorlib" targetFramework=".NETFramework4.6.2" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

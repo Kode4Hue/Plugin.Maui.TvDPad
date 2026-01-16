@@ -1,0 +1,1 @@
+.NET Multi-platform App UI (.NET MAUI) is a cross-platform framework for creating native mobile and desktop apps with C# and XAML. This package only contains the core objects used by .NET MAUI. Please install the Microsoft.Maui.Controls package to start using .NET MAUI.

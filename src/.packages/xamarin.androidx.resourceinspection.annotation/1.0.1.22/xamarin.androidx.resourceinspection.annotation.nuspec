@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Xamarin.AndroidX.ResourceInspection.Annotation</id>
+    <version>1.0.1.22</version>
+    <title>.NET for Android and MAUI bindings for the Android Java library 'androidx.resourceinspection:resourceinspection-annotation'.</title>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT AND Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/MIT%20AND%20Apache-2.0</licenseUrl>
+    <icon>icon.png</icon>
+    <readme>readme.md</readme>
+    <projectUrl>https://aka.ms/android-libraries</projectUrl>
+    <description>.NET for Android and MAUI bindings for the Android Java library 'androidx.resourceinspection:resourceinspection-annotation'.
+
+Library description: Annotation processors for Android resource and layout inspection</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>xamarin artifact=androidx.resourceinspection:resourceinspection-annotation artifact_versioned=androidx.resourceinspection:resourceinspection-annotation:1.0.1</tags>
+    <repository type="git" url="https://github.com/xamarin/AndroidX.git" branch="refs/tags/20250728-stable-updates-20250815" commit="68db082220ebc7f370f61bf8c64e4832db889928" />
+    <dependencies>
+      <group targetFramework="net8.0-android34.0">
+        <dependency id="Xamarin.AndroidX.Annotation" version="1.9.1.5" include="All" />
+      </group>
+      <group targetFramework="net10.0-android36.0">
+        <dependency id="Xamarin.AndroidX.Annotation" version="1.9.1.5" include="All" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

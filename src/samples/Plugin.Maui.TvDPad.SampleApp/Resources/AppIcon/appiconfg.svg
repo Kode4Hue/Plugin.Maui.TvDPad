@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="456" height="456" viewBox="0 0 456 456" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .fg { fill: #F4F3E6; }
+      .green { fill: #1DB954; }
+      .gold { fill: #F2C94C; }
+      .red { fill: #EB5757; }
+    </style>
+  </defs>
+
+  <!-- Keep all content inside a safe area for adaptive icons -->
+  <g transform="translate(0,0)">
+    <!-- rasta stripes -->
+    <rect x="106" y="88" width="244" height="16" rx="8" class="green"/>
+    <rect x="106" y="110" width="244" height="16" rx="8" class="gold"/>
+    <rect x="106" y="132" width="244" height="16" rx="8" class="red"/>
+
+    <!-- d-pad -->
+    <rect x="198" y="160" width="60" height="152" rx="18" class="fg"/>
+    <rect x="152" y="206" width="152" height="60" rx="18" class="fg"/>
+    <circle cx="228" cy="236" r="10" class="gold"/>
+
+    <!-- label -->
+    <text x="228" y="360" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="800" class="fg">TV</text>
+    <text x="228" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="800" class="fg">DPAD</text>
+  </g>
+</svg>
